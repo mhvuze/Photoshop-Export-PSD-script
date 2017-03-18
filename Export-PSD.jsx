@@ -1,5 +1,6 @@
 // Export PSD.jsx 1.0
 // by Edward Loveall
+// very slightly modified to use incremental naming by MHVuze
 // Based on Auto Save PSD.jsx 1.4
 // by Joonas Pääkkö
 // https://github.com/joonaspaakko
@@ -51,7 +52,7 @@ try {
 
 catch( e ) {
     // remove comments below to see error for debugging
-    // alert( e );
+    //alert( e );
 }
 
 function ExportPSD( doc, docName ) {
@@ -60,13 +61,17 @@ function ExportPSD( doc, docName ) {
     var ext                   = '.png';
 
     // Document name
-    var docName               = doc.name;
+    var docName               = 'pic';
 
     // Save Path
-    var desktop               = '~/Desktop';
+    var desktop               = new Folder('F:\\pic\\');
 
     // Gets rid of the extension
     var docName               = docName.substring( 0, docName.indexOf('.') );
+    
+    // Get list of all matching files
+    var currentAS             = desktop.getFiles( docName + '*' + '.png' );
+    var suffix                = pad(currentAS.length + 1, 4);
 
     // Options for the soon to be exported
     var png_Opt               = new PNGSaveOptions();
@@ -74,6 +79,12 @@ function ExportPSD( doc, docName ) {
     png_Opt.interlaced        = true; // Interlaced
 
     // Save active document in the Save folder
-    doc.saveAs( File( desktop + '/' + docName + ext ), png_Opt, true );
+    doc.saveAs( File( desktop + '/' + docName + suffix + ext ), png_Opt, true );
 
 } // ExportPSD() end
+
+function pad(n, width, z) {
+    z = z || '0';
+    n = n + '';
+    return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
+}
